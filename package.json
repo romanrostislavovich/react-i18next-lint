@@ -34,10 +34,16 @@
     ],
     "keywords": [
         "react-i18next",
-        "i18n",
+        "i18next",
         "validator",
         "linting",
-        "cli"
+        "cli",
+        "react",
+        "validator",
+        "linter",
+        "lint",
+        "checker",
+        "translate"
     ],
     "publishConfig": {
         "registry": "https://registry.npmjs.org/",
