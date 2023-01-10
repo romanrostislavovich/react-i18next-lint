@@ -2,7 +2,6 @@
 
 > Simple tools for check react-i18next keys in whole app which use regexp.
 
-[![Build Master](https://travis-ci.com/svoboda-rabstvo/react-i18next-lint.svg?branch=master)](https://travis-ci.com/svoboda-rabstvo/react-i18next-lint)
 [![semantic](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 [![npm](https://img.shields.io/npm/v/react-i18next-lint.svg)](https://www.npmjs.com/package/react-i18next-lint)
 [![download npm](https://img.shields.io/npm/dm/react-i18next-lint.svg)](https://www.npmjs.com/package/react-i18next-lint)

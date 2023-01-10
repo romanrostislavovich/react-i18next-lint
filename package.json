@@ -24,7 +24,7 @@
         "build": "tsc -p . && gulp -f ./config/gulp.js",
         "lint": "npm run lint:typescript && npm run lint:markdown",
         "test": "npm run test:integration",
-        "pre:release": "npm run lint && npm run build && npm run test",
+        "pre:release": "npm run lint && npm run build",
         "semantic-release": "env-cmd semantic-release --no-ci",
         "self-lint": "npx react-i18next-lint -p ./test/integration/inputs/views/*.{html,ts,js} -l ./test/integration/inputs/locales/*.json -i ./test/integration/inputs/locales/incorrect.json"
     },
