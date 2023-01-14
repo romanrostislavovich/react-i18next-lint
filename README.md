@@ -6,6 +6,11 @@
 [![npm](https://img.shields.io/npm/v/react-i18next-lint.svg)](https://www.npmjs.com/package/react-i18next-lint)
 [![download npm](https://img.shields.io/npm/dm/react-i18next-lint.svg)](https://www.npmjs.com/package/react-i18next-lint)
 
+> for `react-intl` use [`react-intl-lint`](https://www.npmjs.com/package/react-intl-lint)
+>
+> for `ngx-translate` use [`ngx-translate-lint`](https://www.npmjs.com/package/ngx-translate-lint)
+
+
 ## Table of Contents
 
 - [Background](#background)
