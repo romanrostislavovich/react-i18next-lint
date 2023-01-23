@@ -1,7 +1,7 @@
 {
     "author": "Raman Lauryniuk <romanrostislavovich@gmail.com>",
     "name": "react-i18next-lint",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Simple tools for check `react-i18next` keys in app",
     "license": "MIT",
     "repository": "svoboda-rabstvo/react-i18next-lint",
