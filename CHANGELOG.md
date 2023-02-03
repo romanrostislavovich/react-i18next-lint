@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [1.0.4](https://github.com/svoboda-rabstvo/react-i18next-lint/compare/v1.0.3...v1.0.4) (2023-02-03)
+
+
+### Bug Fixes
+
+* documentation ([52f94b9](https://github.com/svoboda-rabstvo/react-i18next-lint/commit/52f94b938d8e38365e5fdfb3f10dae8b18dd2f06))
+
 ## [1.0.3](https://github.com/svoboda-rabstvo/react-i18next-lint/compare/v1.0.2...v1.0.3) (2023-01-26)
 
 
