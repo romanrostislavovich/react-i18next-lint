@@ -8,8 +8,6 @@ import { KeysUtils } from './utils';
 import { FileLanguageModel, FileViewModel, KeyModel, LanguagesModel, ResultCliModel, ResultErrorModel } from './models';
 import { AbsentViewKeysRule, MisprintRule, ZombieRule, EmptyKeysRule } from './rules';
 import { KeyModelWithLanguages, LanguagesModelWithKey, ViewModelWithKey } from './models/KeyModelWithLanguages';
-import { WorkspaceSymbols } from 'ngast';
-import { NgModuleSymbol } from 'ngast/lib/ngtsc/module.symbol';
 
 
 class ReactI18nextLint {
