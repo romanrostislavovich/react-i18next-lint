@@ -59,7 +59,7 @@ Options:
           (default: "./src/**/*.{html,ts,js}")
   -l,  --languages [glob] (required)
           The path to languages folder
-          Possible Values: <relative path|absolute path>
+          Possible Values: <relative path|absolute path| URL>
           (default: "./src/assets/i18n/*.json")
   -kv,  --keysOnViews [enum]
           Described how to handle the error of missing keys on view
@@ -104,6 +104,7 @@ Examples:
     $ npx react-i18next-lint  -p ./src/app/**/*.{html,ts,js} -l ./src/assets/i18n/*.json
     $ react-i18next-lint -p ./src/app/**/*.{html,ts,js} -l ./src/assets/i18n/*.json
     $ react-i18next-lint -p ./src/app/**/*.{html,ts,js} -z disable -v error
+    $ react-i18next-lint -p ./src/app/**/*.{html,ts,js} -l https://8.8.8.8/locales/EN-eu.json
 ```
 
 > NOTE: For `project` and `languages` options need to include file types like on the example.

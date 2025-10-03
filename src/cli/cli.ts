@@ -32,6 +32,7 @@ Examples:
     $ ${name} -p ${config.defaultValues.projectPath} -l ${config.defaultValues.languagesPath}
     $ ${name} -p ${config.defaultValues.projectPath} -z ${ErrorTypes.disable} -v ${ErrorTypes.error}
     $ ${name} -p ${config.defaultValues.projectPath} -i ./src/assets/i18n/EN-us.json, ./src/app/app.*.{json}
+    $ ${name} -p ${config.defaultValues.projectPath} -l https://8.8.8.8/locales/EN-eu.json
 
 `
 };
@@ -44,11 +45,11 @@ class Cli {
         this.cliOptions = options;
     }
 
-    public static run(options: OptionModel[]): void {
+    public static async run(options: OptionModel[]): Promise<void> {
         const cli: Cli = new Cli(options);
         cli.init();
         cli.parse();
-        cli.runCli();
+        await cli.runCli();
     }
 
     public init(options: OptionModel[] = this.cliOptions): void {
@@ -73,7 +74,7 @@ class Cli {
             });
     }
 
-    public runCli(): void {
+    public async runCli(): Promise<void> {
         try {
             // tslint:disable-next-line:no-any
             const options: any = this.cliClient.config ? parseJsonFile(this.cliClient.config) : this.cliClient;
@@ -123,7 +124,7 @@ class Cli {
             this.printCurrentVersion();
 
             if (options.project && options.languages) {
-                this.runLint(
+                await this.runLint(
                     projectPath, languagePath, optionZombiesRule,
                     optionViewsRule, optionIgnore, optionMaxWarning, optionMisprint, optionEmptyKey, deepSearch,
                     optionMisprintCoefficient, optionIgnoredKeys, optionIgnoredMisprintKeys, optionCustomRegExpToFindKeys, tsConfigPath
@@ -163,7 +164,7 @@ class Cli {
         return missingRequiredOption;
     }
 
-    public runLint(
+    public async runLint(
         project: string,
         languages: string,
         zombies?: ErrorTypes,
@@ -178,7 +179,7 @@ class Cli {
         ignoredMisprintKeys: string[] = [],
         customRegExpToFindKeys: string[] | RegExp[] = [],
         tsConfigPath?: string,
-    ): void {
+    ): Promise<void> {
             const errorConfig: IRulesConfig = {
                 misprintKeys: misprint || ErrorTypes.disable,
                 deepSearch: deepSearch || ToggleRule.disable,
@@ -192,7 +193,7 @@ class Cli {
                 customRegExpToFindKeys,
             };
             const validationModel: ReactI18nextLint = new ReactI18nextLint(project, languages, ignore, errorConfig, tsConfigPath);
-            const resultCliModel: ResultCliModel = validationModel.lint(maxWarning);
+            const resultCliModel: ResultCliModel = await validationModel.lint(maxWarning);
             const resultModel: ResultModel = resultCliModel.getResultModel();
             resultModel.printResult();
             resultModel.printSummery();
