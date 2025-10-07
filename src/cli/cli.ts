@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import commander from 'commander';
+import commander, { Option } from 'commander';
 
 import { OptionModel } from './models';
 import {
@@ -38,7 +38,8 @@ Examples:
 };
 
 class Cli {
-    private cliClient: commander.CommanderStatic = commander;
+    // tslint:disable-next-line:no-any
+    private cliClient: any = commander.program;
     private cliOptions: OptionModel[] = [];
 
     constructor(options: OptionModel[]) {
@@ -57,12 +58,12 @@ class Cli {
             const optionFlag: string = option.getFlag();
             const optionDescription: string = option.getDescription();
             const optionDefaultValue: string | ErrorTypes | undefined = option.default;
-            this.cliClient.option(optionFlag, optionDescription, optionDefaultValue);
+            this.cliClient.addOption(new Option(optionFlag, optionDescription).default(optionDefaultValue));
         });
 
         // tslint:disable-next-line:no-any
         const packageJson: any = parseJsonFile(getPackageJsonPath());
-        this.cliClient.version(packageJson.version);
+        this.cliClient.version(packageJson.version, '-v, --version', `Print current version of ${name}`);
 
         this.cliClient
             .name(docs.name)
@@ -77,7 +78,7 @@ class Cli {
     public async runCli(): Promise<void> {
         try {
             // tslint:disable-next-line:no-any
-            const options: any = this.cliClient.config ? parseJsonFile(this.cliClient.config) : this.cliClient;
+            const options: any = this.cliClient.config ? parseJsonFile(this.cliClient.config) : this.cliClient.opts();
             const projectPath: string = options.project;
             const languagePath: string = options.languages;
             const tsConfigPath: string = options.tsConfigPath;
@@ -153,7 +154,7 @@ class Cli {
     private validate(): boolean {
         const requiredOptions: OptionModel[] = this.cliOptions.filter((option: OptionModel) => option.required);
         const missingRequiredOption: boolean = requiredOptions.reduce((accum: boolean, option: OptionModel) => {
-            if (!this.cliClient[String(option.longName)]) {
+            if (!this.cliClient.opts()[String(option.longName)]) {
                 accum = false;
                 // tslint:disable-next-line: no-console
                 console.error(`Missing required argument: ${option.getFlag()}`);
