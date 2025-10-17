@@ -3,7 +3,7 @@
 import { Cli } from './cli';
 import { cliOptions } from './dictionaries';
 
-(async () => {
-    await Cli.run(cliOptions);
+(async() => {
+   await Cli.run(cliOptions);
 })();
 
