@@ -3,7 +3,7 @@ import * as path from 'path';
 
 import chalk from 'chalk';
 
-import { FatalErrorModel } from '../../core';
+import { FatalErrorModel } from 'ngx-translate-lint';
 
 const packageJsonPath: string = './package.json';
 
