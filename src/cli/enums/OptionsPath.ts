@@ -1,7 +1,7 @@
 enum OptionsPath {
     relative = 'relative path',
     absolute = 'absolute path',
-    URL = 'url',
+    url = 'URL'
 }
 
 export { OptionsPath };
