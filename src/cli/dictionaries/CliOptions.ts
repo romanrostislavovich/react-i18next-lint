@@ -1,7 +1,7 @@
 import { ArgumentTypes } from 'conventional-cli';
 
 import { OptionModel } from '../models';
-import { config, ErrorTypes, ToggleRule } from './../../core';
+import { config, ErrorTypes, ToggleRule } from 'ngx-translate-lint';
 import { OptionsLongNames, OptionsPath, OptionsShortNames } from './../enums';
 
 const cliOptions: OptionModel[] = [
