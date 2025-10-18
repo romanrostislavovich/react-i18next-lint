@@ -53,50 +53,56 @@ Usage: react-i18next-lint [options]
 Simple CLI tools for check `react-i18next` keys in app
 
 Options:
-  -p,  --project [glob] (required)
+  -p, --project [glob]                   
           The path to project folder
           Possible Values: <relative path|absolute path>
-          (default: "./src/**/*.{html,ts,js}")
-  -l,  --languages [glob] (required)
+          
+  -l, --languages [glob]                 
           The path to languages folder
-          Possible Values: <relative path|absolute path| URL>
-          (default: "./src/assets/i18n/*.json")
-  -kv,  --keysOnViews [enum]
+          Possible Values: <relative path|absolute path|URL>
+          
+  --kv, --keysOnViews [enum]             
           Described how to handle the error of missing keys on view
           Possible Values: <disable|warning|error>
-          (default: "error")
-  -zk,  --zombieKeys [enum]
-          Described how to handle the error of zombies keys
+          
+  --zk, --zombieKeys [enum]              
+          Described how to handle the error of zombies keys. Zombie keys are keys that doesn't exist on any languages file but exist on project, or exist languages but doesn't exist on project
           Possible Values: <disable|warning|error>
-          (default: "warning")
-  -ek, --emptyKeys [enum]
-          Described how to handle empty value on translate keys
+          
+  --ek, --emptyKeys [enum]               
+          Described how to handle empty value on translate keys. Empty keys are keys that doesn't have any value on languages files
           Possible Values: <disable|warning|error>
-           (default: "warning")
-  -i,  --ignore [glob]
+          
+  -i, --ignore [glob]                    
           Ignore projects and languages files
           Possible Values: <relative path|absolute path>
-  --maxWarning [glob]
+          
+  --maxWarning [glob]                    
           Max count of warnings in all files. If this value more that count of warnings, then an error is return
           Possible Values: <number>
-           (default: "0")
-  -mk,  --misprintKeys [enum]
-          Try to find matches with misprint keys on views and languages keys. CCan be longer process!!
+          
+  --mk, --misprintKeys [enum]            
+          Try to find matches with misprint keys on views and languages keys. Coefficient: 0.9. Can be longer process!!
           Possible Values: <disable|warning|error>
-           (default: "disable")
-  -ds,  --deepSearch [enum]
+          
+  --ds, --deepSearch [enum]              
           Add each translate key to global regexp end try to find them on project. Can be longer process!!
           Possible Values: <disable|enable>
-           (default: "disable")
-  -mc, --misprintCoefficient [number]
+          
+  --mc, --misprintCoefficient [number]   
           Coefficient for misprint option can be from 0 to 1.0.
-          (default: "0.9")
-  -c, --config [path]
-          Path to the config file.
-
-
-  -V, --version   output the version number
-  -h, --help      output usage information
+          
+          
+  -c, --config [path]                    
+          Path to config via JSON or JS file
+          Possible Values: <relative path|absolute path>
+          
+  --fz, --fixZombiesKeys [boolean]       
+          Auto fix zombies keys on languages files
+          
+          
+  -v, --version                          Print current version of ngx-translate-lint
+  -h, --help                             display help for command
 
 
 Examples:
@@ -109,8 +115,7 @@ Examples:
 
 > NOTE: For `project` and `languages` options need to include file types like on the example.
 
-
-Default Config is:
+Default JSON Config is:
 ```json
 {
     "rules": {
@@ -125,9 +130,60 @@ Default Config is:
         "ignoredMisprintKeys": [],
         "customRegExpToFindKeys": [ "(?<=marker\\(['\"])([A-Za-z0-9_\\-.]+)(?=['\"]\\))"], // to find: marker('TRSNLATE.KEY');
     },
-    "project": "./src/app/**/*.{html,ts,js}",
+    "fetch": {
+        "requestQuery": "",
+        "requestHeaders": {},
+        "responseQuery": ""
+    },
+    "fixZombiesKeys": false,
+    "project": "./src/app/**/*.{html,ts}",
     "languages": "./src/assets/i18n/*.json"
 }
+```
+
+JS Config should have `default` export via object like config. See example:
+
+Example JS config is:
+```javascript
+
+const config = {
+    rules: {
+        keysOnViews: "error",
+        zombieKeys: "warning",
+        emptyKeys: "warning",
+        misprint: {
+            type: "warning",
+            coefficient: 0.9
+        },
+        ignoredKeys: [],
+        ignoredMisprintKeys: []
+    },
+    fetch: {
+        requestQuery: "",
+        requestHeaders: {},
+        responseQuery: "",
+        get: async () => {
+            const requestOne = fetch('https://8.8.8.8/locales/EN-eu.json');
+            const requestTwo = fetch('https://8.8.8.8/locales/EN-us.json');
+            const result = await Promise.all([requestOne, requestTwo]).then(async ([responseOne, responseTwo]) => {
+                return {
+                    ...(await responseOne.json()),
+                    ...(await  responseTwo.json())
+                }
+            });
+            // NOTE: result should contains only translation keys. Example 
+            // {
+            //   "translation.key": "value"
+            // }
+            return result;
+        }
+    },
+    fixZombiesKeys: false,
+    project: "./src/app/**/*.{html,ts}",
+    languages: "./src/assets/i18n/*.json"
+}
+
+export default config;
 ```
 
 #### How to write Custom RegExp
@@ -135,24 +191,24 @@ Default Config is:
 We have `(?<=marker\\(['\"])([A-Za-z0-9_\\-.]+)(?=['\"]\\))` RegExp witch contains of 3 parts:
 
 - Prefix - `(?<=marker\\(['\"])`
-   - This construction tells that what we need matching before translate key
-   - start with `(?<=` and end `)`.
-   - `marker\\(['\"]` - tells that we try to find word `market` witch have on the second character `'`or `"`
-   - To summarize, we are trying to find keys before each word to be `market` and commas `'` or `"`
-  
+    - This construction tells that what we need matching before translate key
+    - start with `(?<=` and end `)`.
+    - `marker\\(['\"]` - tells that we try to find word `market` witch have on the second character `'`or `"`
+    - To summarize, we are trying to find keys before each word to be `market` and commas `'` or `"`
+
 - Matching for key: `([A-Za-z0-9_\\-.]+)`
-  - This construction tells that we find and save all words which contain alphabet, numbers, and `_` or `-`.
-  - We recommend using this part of RegExp to find and save translated keys
-  - But you can also use `(.*)` If it's enough for your project
+    - This construction tells that we find and save all words which contain alphabet, numbers, and `_` or `-`.
+    - We recommend using this part of RegExp to find and save translated keys
+    - But you can also use `(.*)` If it's enough for your project
 - Postfix - `(?=['\"]\\))` (the same as prefix, but need to be ended)
-  - This construction tells that what we need matching after translate key
-  - start with `(?=` and end `)`
-  - `['\"]\\)` - tells that we try to find word comas `'` or `"` and ended with `)`
-  - To summarize, we are trying to find keys ended each word to be commas `'` or `"` and `)`
+    - This construction tells that what we need matching after translate key
+    - start with `(?=` and end `)`
+    - `['\"]\\)` - tells that we try to find word comas `'` or `"` and ended with `)`
+    - To summarize, we are trying to find keys ended each word to be commas `'` or `"` and `)`
 
 Example RegExp will find following keys
-  - `marker('TRSNLATE.KEY')`
-  - `marker("TRSNLATE.KEY-2")`
+- `marker('TRSNLATE.KEY')`
+- `marker("TRSNLATE.KEY-2")`
 
 #### Exit Codes
 
@@ -165,38 +221,47 @@ The CLI process may exit with the following codes:
 ### TypeScript
 
 ```typescript
-import { ToggleRule, ReactI18nextLint, IRulesConfig, ResultCliModel, ErrorTypes, LanguagesModel } from 'react-i18next-lint';
+import {
+    ToggleRule,
+    NgxTranslateLint,
+    IRulesConfig,
+    ResultCliModel,
+    ErrorTypes,
+    LanguagesModel,
+    IFetch,
+    ngxTranslateRegEx,
+} from 'ngx-translate-lint';
 
-const viewsPath: string = './src/app/**/*.{html,ts,js}';
+const viewsPath: string = './src/app/**/*.{html,ts}';
 const languagesPath: string = './src/assets/i18n/*.json';
 const ignoredLanguagesPath: string = "./src/assets/i18n/ru.json, ./src/assets/i18n/ru-RU.json";
 const ruleConfig: IRulesConfig = {
-        keysOnViews: ErrorTypes.error,
-        zombieKeys: ErrorTypes.warning,
-        misprintKeys: ErrorTypes.disable,
-        deepSearch: ToggleRule.disable,
-        emptyKeys: ErrorTypes.warning,
-        maxWarning: 0,
-        misprintCoefficient: 0.9,
-        ignoredKeys: [ 'EXAMPLE.KEY', 'IGNORED.KEY.(.*)' ], // can be string or RegExp
-        ignoredMisprintKeys: [],
-        customRegExpToFindKeys: [ "(?<=marker\\(['\"])([A-Za-z0-9_\\-.]+)(?=['\"]\\))" ] // to find: marker('TRSNLATE.KEY');
+    keysOnViews: ErrorTypes.error,
+    zombieKeys: ErrorTypes.warning,
+    misprintKeys: ErrorTypes.disable,
+    deepSearch: ToggleRule.disable,
+    emptyKeys: ErrorTypes.warning,
+    maxWarning: 0,
+    misprintCoefficient: 0.9,
+    fixZombiesKeys: false,
+    ignoredKeys: ['EXAMPLE.KEY', 'IGNORED.KEY.(.*)'], // can be string or RegExp
+    ignoredMisprintKeys: [],
+    customRegExpToFindKeys: ["(?<=marker\\(['\"])([A-Za-z0-9_\\-.]+)(?=['\"]\\))"] // to find: marker('TRSNLATE.KEY');
 };
+const fixZombiesKeys: boolean = false;
+const fetchSettings: IFetch = {
+    requestQuery: "",
+    requestHeaders: {},
+    responseQuery: "",
+    get: () => {
+        // You fetch to get locales
+    }
+};
+const ngxTranslateRegEx: ngxTranslateRegEx = ngxTranslateRegEx; // Here can be your array of regexp to find keys
+const ngxTranslateLint = new NgxTranslateLint(viewsPath, languagesPath, ignoredLanguagesPath, ruleConfig, fixZombiesKeys, fetchSettings, ngxTranslateRegEx)
+const resultLint: ResultCliModel = ngxTranslateLint.lint(); // Run Lint
+const languages: LanguagesModel[] = ngxTranslateLint.getLanguages()  // Get Languages with all keys and views
 
-const reactI18nLint = new ReactI18nextLint(viewsPath, languagesPath, ignoredLanguagesPath, ruleConfig)
-const resultLint: ResultCliModel = reactI18nLint.lint(); // Run Lint
-const languages: LanguagesModel[] = reactI18nLint.getLanguages()  // Get Languages with all keys and views
-
-```
-
-#### NOTE!
-If you have error `Can't resolve 'fs' in ...`. Please add next setting to you project:
-
- - tsconfig.json
- ```json
-{
-    "skipLibCheck": true
-}
 ```
 
 ## Contribute
@@ -207,7 +272,10 @@ Please check our [contributing guidelines][contributing].
 
 ## Used By
 
-Here can be your extensions
+Here can be your extensions:
+
+- [ngx-translate-editor](https://github.com/svoboda-rabstvo/ngx-translate-editor) - Simple GUI for CRUD translate keys of ngx-translate, which included ngx-translate-lint
+- [121 Platform](https://github.com/global-121/121-platform) - 121 is an open source platform for Cash based Aid built with Digital Identity & Local/Global Financial service partners.
 
 ## License
 

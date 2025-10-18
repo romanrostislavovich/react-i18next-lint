@@ -14,19 +14,20 @@ import {
     parseJsonFile,
     getPackageJsonPath, IFetch,
     config,
-} from "ngx-translate-lint";
+} from "./../core";
 
 import { OptionsLongNames, OptionsShortNames } from './enums';
 import chalk from 'chalk';
 import * as i18nextRegExp from '../react-i18next/regex';
+import path from 'node:path';
 
-const name: string = 'ngx-translate-lint';
+const name: string = 'react-i18next-lint';
 
 // tslint:disable-next-line:no-any
 const docs: any = {
     name,
     usage: '[options]',
-    description: 'Simple CLI tools for check `ngx-translate` keys in app',
+    description: 'Simple CLI tools for check `react-i18next` keys in app',
     examples: `
 
 Examples:
@@ -79,7 +80,7 @@ class Cli {
     public async runCli(): Promise<void> {
         try {
             // Options
-            const fileOptions: any = this.cliClient.opts().config ? parseJsonFile(this.cliClient.opts().config) : {};
+            const fileOptions: any = await this.getConfig(this.cliClient.opts().config);
             const commandOptions: any = this.cliClient.opts();
             const defaultOptions: any = config.defaultValues;
 
@@ -129,6 +130,24 @@ class Cli {
             process.exitCode = StatusCodes.crash;
         } finally {
             process.exit();
+        }
+    }
+
+    // tslint:disable-next-line:no-any
+    public async getConfig(configPath: string): Promise<any> {
+        if (!configPath) {
+            return {};
+        }
+
+        const extension: string = path.extname(configPath);
+
+        if (extension === '.json') {
+            return parseJsonFile(configPath);
+        }
+
+        if (extension === '.js') {
+            const result: any =  await import(configPath);
+            return result.default;
         }
     }
 
