@@ -20,6 +20,7 @@ import { OptionsLongNames, OptionsShortNames } from './enums';
 import chalk from 'chalk';
 import * as i18nextRegExp from '../react-i18next/regex';
 import path from 'node:path';
+import { PathUtils } from 'ngx-translate-lint';
 
 const name: string = 'react-i18next-lint';
 
@@ -146,7 +147,8 @@ class Cli {
         }
 
         if (extension === '.js') {
-            const result: any =  await import(configPath);
+            const correctConfigPath: string = PathUtils.resolvePath(configPath);
+            const result: any =  await import(correctConfigPath);
             return result.default;
         }
     }
