@@ -89,10 +89,10 @@ class Cli {
                ...defaultOptions,
               ...defaultOptions.rules,
 
-              ...fileOptions,
-              ...fileOptions.rules,
+                ...commandOptions,
 
-              ...commandOptions
+              ...fileOptions,
+              ...fileOptions?.rules,
             };
 
             const projectPath: string = resultOptions.project;
