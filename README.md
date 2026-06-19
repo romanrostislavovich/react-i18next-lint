@@ -9,7 +9,11 @@
 > for `react-intl` use [`react-intl-lint`](https://www.npmjs.com/package/react-intl-lint)
 >
 > for `ngx-translate` use [`ngx-translate-lint`](https://www.npmjs.com/package/ngx-translate-lint)
-
+>
+> for all popular libraries use [`translate-lint`](https://github.com/romanrostislavovich/translate-lint)
+>
+> On future current package will be merged with [`translate-lint`](https://github.com/romanrostislavovich/translate-lint)
+>
 
 ## Table of Contents
 
